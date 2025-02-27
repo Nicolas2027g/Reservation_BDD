@@ -20,17 +20,14 @@
             if (!empty($nom) && !empty($prenom) && !empty($date_naissance) && !empty($adresse) &&
                 !empty($telephone) && !empty($email) && !empty($password)) {
 
-                // Hash sécurisé du mot de passe
                 $hash_password = password_hash($password, PASSWORD_DEFAULT);
 
                 try {
-                    // Requête sécurisée
                     $sql = "INSERT INTO users (firstname, lastname, adresse, telephone, email, date_naissance, hashpassword) 
                             VALUES (:prenom, :nom, :adresse, :telephone, :email, :date_naissance, :hash_password)";
                     
                     $stmt = $pdo->prepare($sql);
 
-                    // Liaison des paramètres
                     $stmt->bindParam(':prenom', $prenom, PDO::PARAM_STR);
                     $stmt->bindParam(':nom', $nom, PDO::PARAM_STR);
                     $stmt->bindParam(':adresse', $adresse, PDO::PARAM_STR);
@@ -39,7 +36,6 @@
                     $stmt->bindParam(':date_naissance', $date_naissance, PDO::PARAM_STR);
                     $stmt->bindParam(':hash_password', $hash_password, PDO::PARAM_STR);
 
-                    // Exécution de la requête
                     if ($stmt->execute()) {
                         header("Location: connexion.php");
                         exit();
