@@ -23,7 +23,7 @@
                     </form>
 
                     <div class="mt-3">
-                        <p class="mb-0">Si vous n'avez pas de compte : <a href="inscription.html" class="text-primary fw-bold">Inscrivez-vous</a></p>
+                        <p class="mb-0">Si vous n'avez pas de compte : <a href="inscription.php" class="text-primary fw-bold">Inscrivez-vous</a></p>
                     </div>
                 </div>
             </div>
