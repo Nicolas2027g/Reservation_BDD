@@ -1,4 +1,4 @@
-<header class="bg-dark text-light py-3 shadow fixed-top w-100">
+<header class="bg-dark text-light py-3 w-100">
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand fw-bold fs-4" href="#">MesRendezVous</a>

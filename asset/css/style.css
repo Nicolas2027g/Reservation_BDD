@@ -1,0 +1,7 @@
+body {
+    min-height: 100vh; /* Assure que la page prend toute la hauteur de l’écran */
+}
+
+main {
+    padding: 20px; /* Ajoute un peu d’espace */
+}
