@@ -5,7 +5,7 @@
     <div class="container">
         <h1 class="display-4 mb-4">Bienvenue sur notre plateforme de gestion des rendez-vous médicaux</h1>
         <p class="lead mb-4">Réservez, gérez et suivez vos rendez-vous médicaux facilement et rapidement, où que vous soyez.</p>
-        <a href="#" class="btn btn-primary btn-lg">Connectez-vous</a>
+        <a href="connexion.php" class="btn btn-primary btn-lg">Connectez-vous</a>
     </div>
 </main>
 
