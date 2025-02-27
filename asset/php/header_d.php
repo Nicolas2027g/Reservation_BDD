@@ -11,14 +11,14 @@
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav nav-pills">
                     <li class="nav-item mx-2">
-                        <a class="nav-link text-light fw-bold px-3 py-2 rounded-pill" href="#" 
+                        <a class="nav-link text-light fw-bold px-3 py-2 rounded-pill" href="index.php" 
                            onmouseover="this.classList.add('bg-light', 'text-dark')" 
                            onmouseout="this.classList.remove('bg-light', 'text-dark')">
                             Accueil
                         </a>
                     </li>
                     <li class="nav-item mx-2">
-                        <a class="nav-link text-light fw-bold px-3 py-2 rounded-pill" href="#" 
+                        <a class="nav-link text-light fw-bold px-3 py-2 rounded-pill" href="connexion.php" 
                            onmouseover="this.classList.add('bg-light', 'text-dark')" 
                            onmouseout="this.classList.remove('bg-light', 'text-dark')">
                             Connexion
