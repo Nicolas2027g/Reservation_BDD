@@ -14,10 +14,11 @@ CREATE TABLE users (
     telephone VARCHAR(15) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     hashpassword VARCHAR(255) NOT NULL,
+    date_naissance DATE NOT NULL,
     verify BOOLEAN DEFAULT 0,
     
     CONSTRAINT chk_telephone CHECK (telephone REGEXP '^[0-9]{10,15}$'),
-    CONSTRAINT chk_email CHECK (email REGEXP '^[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}$')
+    CONSTRAINT chk_email CHECK (email REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$')
 );
 
 -- Attribution des permissions
