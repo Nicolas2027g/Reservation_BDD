@@ -4,6 +4,8 @@
     include "asset/php/header_d.php";
     require_once "asset/php/config.php";
 
+    $error_message = '';
+
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (
             isset($_POST['nom'], $_POST['prenom'], $_POST['dateNaissance'], $_POST['adresse'],
@@ -40,25 +42,22 @@
                         header("Location: connexion.php");
                         exit();
                     } else {
-                        echo "<p class='text-danger'>Erreur lors de l'inscription.</p>";
+                        $error_message = "Erreur lors de l'inscription.";
                     }
                 } catch (PDOException $e) {
-                    echo $e->getCode();
-                    if ($e->getCode() == 23000) { 
-                        echo "<p class='text-danger'>Erreur : L'email est déjà utilisé.</p>";
-                    } 
-                    elseif ($e->getCode() == "HY000"){
-                        echo "<p class='text-danger'>Erreur : Numéro de téléphone invalide.</p>";
-                    }
-                    else {
-                        echo "<p class='text-danger'>Erreur SQL : " . $e->getMessage() . "</p>";
+                    if ($e->getCode() == 23000) {
+                        $error_message = "Erreur : L'email est déjà utilisé.";
+                    } elseif ($e->getCode() == "HY000") {
+                        $error_message = "Erreur : Numéro de téléphone invalide.";
+                    } else {
+                        $error_message = "Erreur SQL : " . $e->getMessage();
                     }
                 }
             } else {
-                echo "<p class='text-danger'>Tous les champs doivent être remplis.</p>";
+                $error_message = "Tous les champs doivent être remplis.";
             }
         } else {
-            echo "<p class='text-danger'>Formulaire invalide.</p>";
+            $error_message = "Formulaire invalide.";
         }
     }
 ?>
@@ -107,6 +106,10 @@
                             <input type="password" class="form-control" id="password" name="password" placeholder="Votre mot de passe" required>
                         </div>
 
+                        <?php if (!empty($error_message)): ?>
+                            <div class="alert alert-danger"><?= htmlspecialchars($error_message, ENT_QUOTES, 'UTF-8'); ?></div>
+                        <?php endif; ?>
+
                         <button type="submit" class="btn btn-primary w-100 fw-bold">S'inscrire</button>
                     </form>
 
@@ -119,7 +122,7 @@
     </div>
 </main>
 
-<?php   
+<?php
     include "asset/php/footer.php";
     include "asset/php/foot.php";
 ?>
