@@ -1,5 +1,7 @@
-<?php   include "asset/php/head.php"    ?>
-<?php   include "asset/php/header_d.php"  ?>
+<?php
+    include "asset/php/head.php";
+    include "asset/php/header_d.php";
+?>
 
 <main class="flex-grow-1 d-flex align-items-center justify-content-center text-center">
     <div class="container">
@@ -31,5 +33,9 @@
     </div>
 </main>
 
-<?php   include "asset/php/footer.php"  ?>
-<?php   include "asset/php/foot.php"    ?>
+<?php   
+    include "asset/php/footer.php";
+    include "asset/php/foot.php";
+    require_once "asset/php/config.php";
+?>
+
