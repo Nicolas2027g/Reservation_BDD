@@ -16,7 +16,6 @@
             $telephone = trim($_POST['telephone']);
             $email = trim($_POST['email']);
             $password = trim($_POST['password']);
-            echo $email;
 
             if (!empty($nom) && !empty($prenom) && !empty($date_naissance) && !empty($adresse) &&
                 !empty($telephone) && !empty($email) && !empty($password)) {
@@ -48,7 +47,16 @@
                         echo "<p class='text-danger'>Erreur lors de l'inscription.</p>";
                     }
                 } catch (PDOException $e) {
-                    echo "<p class='text-danger'>Erreur SQL : " . $e->getMessage() . "</p>";
+                    echo $e->getCode();
+                    if ($e->getCode() == 23000) { 
+                        echo "<p class='text-danger'>Erreur : L'email est déjà utilisé.</p>";
+                    } 
+                    elseif ($e->getCode() == "HY000"){
+                        echo "<p class='text-danger'>Erreur : Numéro de téléphone invalide.</p>";
+                    }
+                    else {
+                        echo "<p class='text-danger'>Erreur SQL : " . $e->getMessage() . "</p>";
+                    }
                 }
             } else {
                 echo "<p class='text-danger'>Tous les champs doivent être remplis.</p>";
