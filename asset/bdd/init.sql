@@ -32,6 +32,7 @@ CREATE TABLE creneau (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     
     INDEX idx_date_jour (date_jour),
+    INDEX idx_user_id	(user_id),
     INDEX idx_heure (heure)
 );
 
