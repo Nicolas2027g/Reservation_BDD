@@ -4,6 +4,10 @@
     include "asset/php/head.php";
     include "asset/php/header_c.php";
 
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+
     if (!isset($_SESSION['userID'])) {
         header("Location: connexion.php");
         exit();
@@ -24,8 +28,10 @@
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-        if (isset($_POST['update'])) {
+        if (!(isset($_POST['csrf_token']) && $_POST['csrf_token'] === $_SESSION['csrf_token'])){
+            $error_message = "Erreur token csrf";
+        }
+        elseif (isset($_POST['update'])) {
             $firstname = trim($_POST['firstname']) ?: $user['firstname'];
             $lastname = trim($_POST['lastname']) ?: $user['lastname'];
             $adresse = trim($_POST['adresse']) ?: $user['adresse'];
@@ -53,6 +59,7 @@
                     $stmt->bindParam(':date_naissance', $date_naissance);
                     $stmt->bindParam(':user_id', $userId);
                     $stmt->execute();
+                    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
                     $success_message = "Les informations ont été mises à jour avec succès.";
                 } catch (PDOException $e) {
@@ -65,7 +72,7 @@
             }
         }
 
-        if (isset($_POST['delete_account'])) {
+        elseif (isset($_POST['delete_account'])) {
             try {
                 $sql = "DELETE FROM users WHERE id = :user_id";
                 $stmt = $pdo->prepare($sql);
@@ -81,7 +88,7 @@
             }
         }
 
-        if (isset($_POST['logout'])) {
+        elseif (isset($_POST['logout'])) {
             session_unset();
             session_destroy();
             header("Location: index.php");
@@ -102,6 +109,7 @@
     <?php endif; ?>
 
     <form method="POST" action="">
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
         <div class="mb-3">
             <label for="firstname" class="form-label">Prénom</label>
             <input type="text" class="form-control" id="firstname" name="firstname" value="<?= htmlspecialchars($_POST['firstname'] ?? $user['firstname']) ?>" required>
@@ -133,10 +141,12 @@
     <hr>
 
     <form method="POST" action="">
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
         <button type="submit" name="logout" class="btn btn-secondary">Se déconnecter</button>
     </form>
 
     <form method="POST" action="">
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
         <button type="submit" name="delete_account" class="btn btn-danger">Supprimer mon compte</button>
     </form>
 </main>

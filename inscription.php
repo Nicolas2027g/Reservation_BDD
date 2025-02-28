@@ -4,10 +4,17 @@
     include "asset/php/header_d.php";
     require_once "asset/php/config.php";
 
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+
     $error_message = '';
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        if (
+        if (!(isset($_POST['csrf_token']) && $_POST['csrf_token'] === $_SESSION['csrf_token'])){
+            $error_message = "Erreur token csrf";
+        }
+        elseif (
             isset($_POST['nom'], $_POST['prenom'], $_POST['dateNaissance'], $_POST['adresse'],
                 $_POST['telephone'], $_POST['email'], $_POST['password'])
         ) {
@@ -43,6 +50,7 @@
                     $stmt->bindParam(':hash_password', $hash_password, PDO::PARAM_STR);
 
                     if ($stmt->execute()) {
+                        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                         header("Location: connexion.php");
                         exit();
                     } else {
@@ -74,6 +82,7 @@
                     <h2 class="fw-bold mb-4">Inscription</h2>
 
                     <form action="" method="POST">
+                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
                         <div class="row">
                             <div class="col-md-6 mb-3 text-start">
                                 <label for="nom" class="form-label fw-bold">Nom</label>

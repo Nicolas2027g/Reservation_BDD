@@ -4,6 +4,10 @@
     include "asset/php/head.php";
     include "asset/php/header_c.php";
 
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+
     if (!isset($_SESSION['userID'])) {
         header("Location: connexion.php");
         exit();
@@ -34,7 +38,10 @@
     }
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        if (!isset($_POST['horaire'])) {
+        if (!(isset($_POST['csrf_token']) && $_POST['csrf_token'] === $_SESSION['csrf_token'])){
+            $_SESSION['error_message'] = "Erreur token csrf";
+        }
+        elseif (!isset($_POST['horaire'])) {
             $_SESSION['error_message'] = "Veuillez sélectionner un horaire.";
         } else {
             $horaire = $_POST['horaire'] . ":00";
@@ -46,6 +53,7 @@
                 $stmt->bindParam(':heure', $horaire, PDO::PARAM_STR);
                 $stmt->execute();
 
+                $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                 $_SESSION['success_message'] = "Créneau réservé avec succès !";
             } catch (PDOException $e) {
                 $_SESSION['error_message'] = "Erreur SQL : " . $e->getMessage();
@@ -65,6 +73,7 @@
     <h2 class="mb-4">Réserver un créneau pour le <?= htmlspecialchars($selectedDate) ?></h2>
 
     <form action="" method="POST">
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
         <input type="hidden" name="date" value="<?= htmlspecialchars($selectedDate) ?>">
 
         <div class="mb-3">

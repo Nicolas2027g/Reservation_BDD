@@ -4,6 +4,10 @@
     include "asset/php/head.php";
     include "asset/php/header_c.php";
 
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+
     if (!isset($_SESSION['userID'])) {
         header("Location: connexion.php");
         exit();
@@ -13,18 +17,24 @@
     $error_message = "";
     $success_message = "";
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
-        $delete_id = $_POST['delete_id'];
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (!(isset($_POST['csrf_token']) && $_POST['csrf_token'] === $_SESSION['csrf_token'])){
+            $error_message = "Erreur token csrf";
+        }
+        elseif(isset($_POST['delete_id'])){
+            $delete_id = $_POST['delete_id'];
 
-        try {
-            $sql = "DELETE FROM creneau WHERE id = :creneau_id";
-            $stmt = $pdo->prepare($sql);
-            $stmt->bindParam(':creneau_id', $delete_id, PDO::PARAM_INT);
-            $stmt->execute();
+            try {
+                $sql = "DELETE FROM creneau WHERE id = :creneau_id";
+                $stmt = $pdo->prepare($sql);
+                $stmt->bindParam(':creneau_id', $delete_id, PDO::PARAM_INT);
+                $stmt->execute();
+                $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
-            $success_message = "Le créneau a bien été annulé.";
-        } catch (PDOException $e) {
-            $error_message = "Erreur lors de l'annulation : " . $e->getMessage();
+                $success_message = "Le créneau a bien été annulé.";
+            } catch (PDOException $e) {
+                $error_message = "Erreur lors de l'annulation : " . $e->getMessage();
+            }
         }
     }
 
@@ -67,6 +77,7 @@
                         <td><?= htmlspecialchars($heure_creneau) ?></td>
                         <td>
                             <form method="POST" action="">
+                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
                                 <input type="hidden" name="delete_id" value="<?= $creneau['id'] ?>">
                                 <button type="submit" class="btn btn-danger">Annuler</button>
                             </form>

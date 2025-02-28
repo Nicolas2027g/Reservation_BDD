@@ -4,11 +4,20 @@
     include "asset/php/head.php";
     include "asset/php/header_d.php";
 
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+
     $error_message = "";
     $success_message = "";
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        if (!empty($_POST['email']) && !empty($_POST['password'])) {
+        if (!(isset($_POST['csrf_token']) && $_POST['csrf_token'] === $_SESSION['csrf_token'])){
+            $_SESSION['error_message'] = "Erreur token csrf";
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
+        }
+        elseif (!empty($_POST['email']) && !empty($_POST['password'])) {
             $email = trim($_POST['email']);
             $password = trim($_POST['password']);
 
@@ -22,6 +31,7 @@
                 if ($user) {
                     if (password_verify($password, $user['hashpassword'])) {
                         $_SESSION['userID'] = $user['id'];
+                        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                         header("Location: profil.php");
                         exit();
                     } else {
@@ -56,6 +66,7 @@
                 <div class="card shadow-lg p-4">
                     <h2 class="fw-bold mb-4">Connexion</h2>
                     <form action="" method="POST">
+                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
                         <div class="mb-3 text-start">
                             <label for="email" class="form-label fw-bold">Adresse Email</label>
                             <input type="email" class="form-control" id="email" name="email" placeholder="Votre email" required>
