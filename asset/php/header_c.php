@@ -18,7 +18,7 @@
                         </a>
                     </li>
                     <li class="nav-item mx-2">
-                        <a class="nav-link text-light fw-bold px-3 py-2 rounded-pill" href="profil.php" 
+                        <a class="nav-link text-light fw-bold px-3 py-2 rounded-pill" href="rdv.php" 
                            onmouseover="this.classList.add('bg-light', 'text-dark')" 
                            onmouseout="this.classList.remove('bg-light', 'text-dark')">
                             Mes Rendez Vous

@@ -16,7 +16,7 @@
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 ?>
 
-<main class="container mt-5">
+<main class="flex-grow-1 container mt-5">
     <h2 class="text-center mb-4">Bienvenue, <?= htmlspecialchars($user['firstname']) ?> !</h2>
 
     <div class="row mb-4">
