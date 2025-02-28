@@ -54,7 +54,13 @@
 
                 $success_message = "Les informations ont été mises à jour avec succès.";
             } catch (PDOException $e) {
-                $error_message = "Erreur lors de la mise à jour des informations : " . $e->getMessage();
+                if ($e->getCode() == 23000) {
+                    $error_message = "Erreur : L'email est déjà utilisé.";
+                } elseif ($e->getCode() == "HY000") {
+                    $error_message = "Erreur : Numéro de téléphone invalide.";
+                } else {
+                    $error_message = "Erreur lors de la mise à jour des informations : " . $e->getMessage();
+                }
             }
         }
     }
