@@ -140,15 +140,17 @@
 
     <hr>
 
-    <form method="POST" action="">
-        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
-        <button type="submit" name="logout" class="btn btn-secondary">Se déconnecter</button>
-    </form>
+    <div class="d-flex justify-content-center gap-3 mt-4">
+        <form method="POST" action="">
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
+            <button type="submit" name="logout" class="btn btn-secondary w-100 w-md-auto">Se déconnecter</button>
+        </form>
 
-    <form method="POST" action="">
-        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
-        <button type="submit" name="delete_account" class="btn btn-danger">Supprimer mon compte</button>
-    </form>
+        <form method="POST" action="">
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
+            <button type="submit" name="delete_account" class="btn btn-danger w-100 w-md-auto">Supprimer mon compte</button>
+        </form>
+    </div>
 </main>
 
 <?php
