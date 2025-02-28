@@ -44,7 +44,7 @@
     }
 
     if (isset($_SESSION['error_message'])) {
-        $error_message = $_SESSION['error_message'];
+        $error_message = htmlspecialchars($_SESSION['error_message'], ENT_QUOTES, 'UTF-8');
         unset($_SESSION['error_message']);
     }
 ?>

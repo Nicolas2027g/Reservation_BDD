@@ -22,6 +22,10 @@
             if (!empty($nom) && !empty($prenom) && !empty($date_naissance) && !empty($adresse) &&
                 !empty($telephone) && !empty($email) && !empty($password)) {
 
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $error_message = "L'email est invalide.";
+                }
+
                 $hash_password = password_hash($password, PASSWORD_DEFAULT);
 
                 try {

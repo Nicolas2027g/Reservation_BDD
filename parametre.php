@@ -23,82 +23,82 @@
         $error_message = "Erreur lors de la récupération des informations : " . $e->getMessage();
     }
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
-        $firstname = trim($_POST['firstname']) ?: $user['firstname'];
-        $lastname = trim($_POST['lastname']) ?: $user['lastname'];
-        $adresse = trim($_POST['adresse']) ?: $user['adresse'];
-        $telephone = trim($_POST['telephone']) ?: $user['telephone'];
-        $email = trim($_POST['email']) ?: $user['email'];
-        $date_naissance = $_POST['date_naissance'] ?: $user['date_naissance'];
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        if (!preg_match('/^[0-9]{10,15}$/', $telephone)) {
-            $error_message = "Le numéro de téléphone n'est pas valide.";
-        }
+        if (isset($_POST['update'])) {
+            $firstname = trim($_POST['firstname']) ?: $user['firstname'];
+            $lastname = trim($_POST['lastname']) ?: $user['lastname'];
+            $adresse = trim($_POST['adresse']) ?: $user['adresse'];
+            $telephone = trim($_POST['telephone']) ?: $user['telephone'];
+            $email = trim($_POST['email']) ?: $user['email'];
+            $date_naissance = $_POST['date_naissance'] ?: $user['date_naissance'];
 
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $error_message = "L'email n'est pas valide.";
-        }
+            if (!preg_match('/^[0-9]{10,15}$/', $telephone)) {
+                $error_message = "Le numéro de téléphone n'est pas valide.";
+            }
 
-        if (empty($error_message)) {
-            try {
-                $sql = "UPDATE users SET firstname = :firstname, lastname = :lastname, adresse = :adresse, telephone = :telephone, email = :email, date_naissance = :date_naissance WHERE id = :user_id";
-                $stmt = $pdo->prepare($sql);
-                $stmt->bindParam(':firstname', $firstname, PDO::PARAM_STR);
-                $stmt->bindParam(':lastname', $lastname, PDO::PARAM_STR);
-                $stmt->bindParam(':adresse', $adresse, PDO::PARAM_STR);
-                $stmt->bindParam(':telephone', $telephone, PDO::PARAM_STR);
-                $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-                $stmt->bindParam(':date_naissance', $date_naissance, PDO::PARAM_STR);
-                $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-                $stmt->execute();
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $error_message = "L'email n'est pas valide.";
+            }
 
-                $success_message = "Les informations ont été mises à jour avec succès.";
-            } catch (PDOException $e) {
-                if ($e->getCode() == 23000) {
-                    $error_message = "Erreur : L'email est déjà utilisé.";
-                } elseif ($e->getCode() == "HY000") {
-                    $error_message = "Erreur : Numéro de téléphone invalide.";
-                } else {
-                    $error_message = "Erreur lors de la mise à jour des informations : " . $e->getMessage();
+            if (empty($error_message)) {
+                try {
+                    $sql = "UPDATE users SET firstname = :firstname, lastname = :lastname, adresse = :adresse, telephone = :telephone, email = :email, date_naissance = :date_naissance WHERE id = :user_id";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->bindParam(':firstname', $firstname);
+                    $stmt->bindParam(':lastname', $lastname);
+                    $stmt->bindParam(':adresse', $adresse);
+                    $stmt->bindParam(':telephone', $telephone);
+                    $stmt->bindParam(':email', $email);
+                    $stmt->bindParam(':date_naissance', $date_naissance);
+                    $stmt->bindParam(':user_id', $userId);
+                    $stmt->execute();
+
+                    $success_message = "Les informations ont été mises à jour avec succès.";
+                } catch (PDOException $e) {
+                    if ($e->getCode() == 23000) {
+                        $error_message = "Erreur : L'email est déjà utilisé.";
+                    } else {
+                        $error_message = "Erreur lors de la mise à jour des informations : " . $e->getMessage();
+                    }
                 }
             }
         }
-    }
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_account'])) {
-        try {
-            $sql = "DELETE FROM users WHERE id = :user_id";
-            $stmt = $pdo->prepare($sql);
-            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-            $stmt->execute();
+        if (isset($_POST['delete_account'])) {
+            try {
+                $sql = "DELETE FROM users WHERE id = :user_id";
+                $stmt = $pdo->prepare($sql);
+                $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+                $stmt->execute();
 
+                session_unset();
+                session_destroy();
+                header("Location: index.php");
+                exit();
+            } catch (PDOException $e) {
+                $error_message = "Erreur lors de la suppression du compte : " . $e->getMessage();
+            }
+        }
+
+        if (isset($_POST['logout'])) {
             session_unset();
             session_destroy();
             header("Location: index.php");
             exit();
-        } catch (PDOException $e) {
-            $error_message = "Erreur lors de la suppression du compte : " . $e->getMessage();
         }
     }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
-        session_unset();
-        session_destroy();
-        header("Location: index.php");
-        exit();
-    }
-
 ?>
 
 <main class="container mt-5">
     <h2 class="mb-4">Modifier votre profil</h2>
 
-    <?php if (!empty($error_message)): ?>
-        <div class="alert alert-danger"><?= $error_message; ?></div>
+    <?php if ($error_message): ?>
+        <div class="alert alert-danger"><?= htmlspecialchars($error_message); ?></div>
     <?php endif; ?>
 
-    <?php if (!empty($success_message)): ?>
-        <div class="alert alert-success"><?= $success_message; ?></div>
+    <?php if ($success_message): ?>
+        <div class="alert alert-success"><?= htmlspecialchars($success_message); ?></div>
     <?php endif; ?>
 
     <form method="POST" action="">
@@ -139,9 +139,6 @@
     <form method="POST" action="">
         <button type="submit" name="delete_account" class="btn btn-danger">Supprimer mon compte</button>
     </form>
-
-    
-
 </main>
 
 <?php
