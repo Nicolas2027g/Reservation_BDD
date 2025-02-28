@@ -23,3 +23,17 @@ CREATE TABLE users (
 
 -- Attribution des permissions
 GRANT SELECT, UPDATE, INSERT, DELETE ON Reservation.users TO 'reservation_web'@'localhost';
+
+CREATE TABLE creneau (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    date_jour DATE NOT NULL,
+    heure TIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    
+    INDEX idx_date_jour (date_jour),
+    INDEX idx_heure (heure)
+);
+
+-- Attribution des permissions
+GRANT SELECT, UPDATE, INSERT, DELETE ON Reservation.creneau TO 'reservation_web'@'localhost';
