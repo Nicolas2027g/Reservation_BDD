@@ -62,8 +62,9 @@
             <tbody>
                 <?php foreach ($CreneauReserves as $creneau): ?>
                     <tr>
+                        <?php $heure_creneau = date("H:i", strtotime($creneau['heure'])); ?>
                         <td><?= htmlspecialchars($creneau['date_jour']) ?></td>
-                        <td><?= htmlspecialchars($creneau['heure']) ?></td>
+                        <td><?= htmlspecialchars($heure_creneau) ?></td>
                         <td>
                             <form method="POST" action="">
                                 <input type="hidden" name="delete_id" value="<?= $creneau['id'] ?>">
